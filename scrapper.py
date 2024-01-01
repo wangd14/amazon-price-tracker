@@ -2,29 +2,31 @@ from bs4 import BeautifulSoup
 import requests
 import time
 
-def price_check(link, delay):
+def price_check(links, originalPrices):
     #Get page html
-    job_page = requests.get(link).text
-    soup = BeautifulSoup(job_page, 'lxml')
+    for index, link in enumerate(links):
+        job_page = requests.get(link).text
+        soup = BeautifulSoup(job_page, 'lxml')
 
-    #Product Information
-    product_name = soup.find('span', class_ = 'a-size-large product-title-word-break').text.strip()
-    price = soup.find('span', class_='a-offscreen').text
-
-    #Prints it out
-    print(f'{product_name}\n Price: {price} \n {link}')
-
-    originalPrice = price
-    
-    while True:
+        #Product Information
+        product_name = soup.find('span', class_ = 'a-size-large product-title-word-break').text.strip()
         price = soup.find('span', class_='a-offscreen').text
-        if(float(originalPrice[1:].strip()) > float(price[1:].strip())):
+
+        #Prints it out
+        print(f'{product_name}\n Price: {price} \n {link}')
+
+
+        price = soup.find('span', class_='a-offscreen').text
+        if(originalPrices[index] > float(price[1:].strip())):
             print('Price dropped')
-        time.sleep(delay*60*60) #hours * minutes * seconds
 
 if __name__ == '__main__':
     #Change inputs here
-    link = 'https://www.amazon.com/A315-24P-R7VH-Display-Quad-Core-Processor-Graphics/dp/B0BS4BP8FB/ref=sr_1_3?crid=366I9FOHLRTUY&keywords=laptop&qid=1704067439&sprefix=laptop%2Caps%2C150&sr=8-3&th=1'
+    links = ['https://www.amazon.com/A315-24P-R7VH-Display-Quad-Core-Processor-Graphics/dp/B0BS4BP8FB/ref=sr_1_3?crid=366I9FOHLRTUY&keywords=laptop&qid=1704067439&sprefix=laptop%2Caps%2C150&sr=8-3&th=1',
+             'https://www.amazon.com/Chesapeake-Bay-Candle-Serenity-Lavender/dp/B07GH691SQ/ref=sr_1_6?crid=VETMUB53OZJV&keywords=candle&qid=1704069033&sprefix=%2Caps%2C135&sr=8-6&th=1']
+    originalPrices = [259.00, 12.49] #Input the original price of the item in this array corresponding to the index in the links
     delay = 24 #in hours
 
-    price_check(link, delay)
+    while True:
+        price_check(links, originalPrices)
+        time.sleep(60*60*delay)
