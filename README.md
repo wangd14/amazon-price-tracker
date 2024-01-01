@@ -1,1 +1,1 @@
-Python Scrapper that takes in Linkedin Jobs based on certain filters inputted by user and displays them (print? email? etc.)
+Python Scrapper that takes an amazon link and checks the price of the product every 24 hours, and it will send an email depending on if the price dropped or not
